@@ -18,5 +18,7 @@ env:
 
 script:
   - docker run build -t codebyte-test .
+  - npm ci
+  - npm run dev
 notifications:
   email: false
