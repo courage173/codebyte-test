@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+    - "node_modules"
+install:
+  - npm install
+services:
+  mongodb:
+    image: mongo:3.4.23
+    ports:
+      - 27017:27017
+
+env:
+  global:
+  - NODE_ENV=test
+
+script:
+  - docker run build -t codebyte-test .
+  - npm ci
+  - npm run dev
+notifications:
+  email: false
