@@ -17,7 +17,7 @@ env:
   - NODE_ENV=test
 
 script:
-  - docker run build -t codebyte-test .
+  - docker build -t codebyte-test .
   - npm ci
   - npm run dev
 notifications:
