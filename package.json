@@ -1,0 +1,75 @@
+{
+    "name": "codebyte-test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/courage173/codebyte-test.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/courage173/codebyte-test/issues"
+    },
+    "scripts": {
+        "dev": "cross-env NODE_ENV=development nodemon server.js",
+        "start": "node server.js",
+        "test": "cross-env NODE_ENV=development mocha --exit test/index.js",
+        "lint": "eslint '**/*.js' -c .eslintrc.json --ignore-path .eslintignore",
+        "fix-lint": "eslint '**/*.js' -c .eslintrc.json --ignore-path .eslintignore --fix"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
+        "crypto": "^1.0.1",
+        "custom-env": "^2.0.1",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.12.3",
+        "rand-token": "^1.0.1",
+        "validatorjs": "^3.22.1",
+        "winston": "^3.3.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.10.2",
+        "@babel/plugin-proposal-class-properties": "^7.10.1",
+        "@babel/plugin-proposal-private-methods": "^7.10.1",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-prettier": "^6.10.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-prettier": "^3.1.2",
+        "husky": "^4.3.5",
+        "lint-staged": "^9.5.0",
+        "prettier": "^1.19.1"
+    },
+    "eslintConfig": {
+        "extends": [
+            "plugin:prettier/recommended"
+        ],
+        "rules": {
+            "no-console": "warn"
+        }
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "./**/*.{json,yml,yaml,md}": [
+            "prettier --write",
+            "git add"
+        ],
+        "./**/*.{js}": [
+            "eslint --fix",
+            "git add"
+        ]
+    },
+    "homepage": "https://github.com/courage173/codebyte-test#readme"
+}
