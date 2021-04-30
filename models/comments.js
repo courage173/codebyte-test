@@ -1,9 +1,9 @@
 const mongoose = require('../config/db');
 
 const Schema = mongoose.Schema;
-const likeSchema = new Schema({
+const commentchema = new Schema({
     content: {
-        type: Boolean,
+        type: String,
         required: true,
     },
     createdAt: {
@@ -13,10 +13,12 @@ const likeSchema = new Schema({
     userId: {
         type: String,
         ref: 'User',
+        required: true,
     },
     postId: {
         type: String,
         ref: 'Post',
+        required: true,
     },
     updatedAt: {
         type: Date,
@@ -26,7 +28,7 @@ const likeSchema = new Schema({
     deletedAt: {
         type: Date,
     },
-    deletedById: { type: String, ref: 'User', index: true },
+    deletedById: { type: String, ref: 'User' },
 });
 
-module.exports = mongoose.model('Like', likeSchema);
+module.exports = mongoose.model('Comment', commentchema);

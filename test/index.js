@@ -3,6 +3,7 @@ try {
     //require('./user.test')
     require('./server.test')
     require('./post.test')
+    require('./comments.test')
 } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
