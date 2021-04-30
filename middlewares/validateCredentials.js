@@ -20,10 +20,10 @@ const validateCredentials = (req, res, next, rules) => {
 };
 const validateRegisterationCredentials = (req, res, next) => {
     const rules = {
-        firstName: 'required',
-        lastName: 'required',
+        firstName: 'required|string',
+        lastName: 'required|string',
         email: 'required|email',
-        password: 'required|min:6',
+        password: 'required|min:6|string',
         dateOfBirth: 'required',
     };
     return validateCredentials(req, res, next, rules);
@@ -32,7 +32,22 @@ const validateRegisterationCredentials = (req, res, next) => {
 const validateLoginCredentials = (req, res, next) => {
     const rules = {
         email: 'required|email',
-        password: 'required|min:6',
+        password: 'required|min:6|string',
+    };
+    return validateCredentials(req, res, next, rules);
+};
+
+const validateForgotPasswordCredentials = (req, res, next) => {
+    const rules = {
+        email: 'required|email',
+    };
+    return validateCredentials(req, res, next, rules);
+};
+
+const validateResetPasswordCredentials = (req, res, next) => {
+    const rules = {
+        password: 'required|string',
+        token: 'required|string',
     };
     return validateCredentials(req, res, next, rules);
 };
@@ -42,4 +57,6 @@ const validateLoginCredentials = (req, res, next) => {
 module.exports = {
     validateRegisterationCredentials,
     validateLoginCredentials,
+    validateForgotPasswordCredentials,
+    validateResetPasswordCredentials,
 };
