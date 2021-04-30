@@ -6,6 +6,7 @@ const errorMessages = {
     email: 'the email format is invalid',
     min: 'Min :attribute limit is :min',
     max: 'Min :attribute limit is :min',
+    string: 'this should be in a string format'
 };
 const validateCredentials = (req, res, next, rules) => {
     const validator = new Validator(req.body, rules, errorMessages);
@@ -52,6 +53,13 @@ const validateResetPasswordCredentials = (req, res, next) => {
     return validateCredentials(req, res, next, rules);
 };
 
+const validatePost = (req, res, next) => {
+    const rules = {
+        content: 'required|string',
+    };
+    return validateCredentials(req, res, next, rules);
+};
+
 
 
 module.exports = {
@@ -59,4 +67,5 @@ module.exports = {
     validateLoginCredentials,
     validateForgotPasswordCredentials,
     validateResetPasswordCredentials,
+    validatePost,
 };
