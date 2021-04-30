@@ -15,7 +15,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development nodemon server.js",
         "start": "node server.js",
-        "test": "cross-env NODE_ENV=development nyc mocha --exit test/index.js",
+        "test": "cross-env NODE_ENV=test mocha --exit test/index.js",
         "lint": "eslint '**/*.js' -c .eslintrc.json --ignore-path .eslintignore",
         "fix-lint": "eslint '**/*.js' -c .eslintrc.json --ignore-path .eslintignore --fix"
     },
@@ -27,6 +27,7 @@
         "cross-env": "^7.0.3",
         "crypto": "^1.0.1",
         "custom-env": "^2.0.1",
+        "dotenv": "^8.2.0",
         "ejs": "^3.1.6",
         "express": "^4.17.1",
         "express-rate-limit": "^5.0.0",

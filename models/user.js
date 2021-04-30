@@ -9,11 +9,7 @@ const userSchema = new Schema({
         required: true,
     },
     password: String,
-    isVerified: {
-        type: Boolean,
-        default: false,
-    },
-    referral: String,
+    jwtRefreshToken: String,
     profilePic: String,
     phone: String,
     dateOfBirth: String,

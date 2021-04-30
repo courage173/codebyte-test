@@ -84,6 +84,7 @@ app.get(['/', '/api'], function(req, res) {
 });
 
 app.use(['/user', '/api/user'], require('./api/user'));
+app.use(['/post', '/api/post'], require('./api/post'));
 
 module.exports = app;
 module.exports.close = function() {

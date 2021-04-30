@@ -149,7 +149,7 @@ module.exports = {
             ) {
                 status = error.status;
             }
-            return res.status(400).json({ message: error.message });
+            return res.status(status).json({ message: error.message });
         } else if (error instanceof mongoose.Error.CastError) {
             return res
                 .status(400)
