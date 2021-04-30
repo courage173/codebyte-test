@@ -5,6 +5,7 @@ const ObjectID = mongoose.Types.ObjectId;
 function filterKeys(field) {
     field = field._doc ? field._doc : field;
 
+
     const filteredKeys = Object.keys(field).filter(
         key =>
             key !== '__v' &&
@@ -72,6 +73,7 @@ function isDate(date) {
 module.exports = {
     sendListResponse: async function(req, res, list, count) {
         // remove __v, deleted, deletedAt and deletedById if not Admin
+        console.log('list calls it')
         if (req.authorizationType !== 'ADMIN') {
             if (Array.isArray(list)) {
                 list = list.map(field =>
@@ -128,9 +130,6 @@ module.exports = {
         return res.status(200).send(item);
     },
     sendErrorResponse: function(req, res, error) {
-        //log error to the console.
-        console.error(error);
-
         if (error.statusCode && error.message) {
             return res
                 .status(error.statusCode)
@@ -150,7 +149,7 @@ module.exports = {
             ) {
                 status = error.status;
             }
-            return res.status(status).send({ message: error.message });
+            return res.status(400).json({ message: error.message });
         } else if (error instanceof mongoose.Error.CastError) {
             return res
                 .status(400)
