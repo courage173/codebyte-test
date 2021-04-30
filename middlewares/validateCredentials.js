@@ -14,7 +14,7 @@ const validateCredentials = (req, res, next, rules) => {
     }
     const errors = validator.errors.all();
     return sendErrorResponse(req, res, {
-        code: 400,
+        statusCode: 400,
         message: errors,
     });
 };
@@ -24,6 +24,7 @@ const validateRegisterationCredentials = (req, res, next) => {
         lastName: 'required',
         email: 'required|email',
         password: 'required|min:6',
+        dateOfBirth: 'required',
     };
     return validateCredentials(req, res, next, rules);
 };
@@ -36,43 +37,9 @@ const validateLoginCredentials = (req, res, next) => {
     return validateCredentials(req, res, next, rules);
 };
 
-const validateInvestmentDetails = (req, res, next) => {
-    const rules = {
-        amount: 'required',
-        investmentReturnAmount: 'required',
-        unit: 'required',
-    };
-    return validateCredentials(req, res, next, rules);
-}
 
-const validateProductDetails = (req, res, next) => {
-    const rules = {
-        title: 'required|string',
-        type: 'required|string',
-        price: 'required',
-        description: 'required|string',
-    };
-    return validateCredentials(req, res, next, rules);
-};
-
-
-const validateWalletDetails = (req, res, next) => {
-    const rules = {
-        accountName: 'required',
-        accountBalance: 'required',
-        currencyCode: 'required',
-        customerEmail: 'required',
-        customerName: 'required',
-        accountNumber: 'required',
-        bankName: 'required',
-    };
-    return validateCredentials(req, res, next, rules);
-};
 
 module.exports = {
     validateRegisterationCredentials,
     validateLoginCredentials,
-    validateInvestmentDetails,
-    validateProductDetails,
-    validateWalletDetails,
 };

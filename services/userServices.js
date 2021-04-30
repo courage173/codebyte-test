@@ -8,22 +8,14 @@ const crypto = require('crypto');
 const jwtSecretKey = process.env['JWT_SECRET'];
 
 module.exports = {
-    register: async function(req, res, data) {
+    register: async function(data) {
         const _this = this;
         try {
-            data.email = data.email.toLowerCase();
-            let user = await _this.findOneBy({ email: data.email });
-            if (user) {
-                return sendErrorResponse(req, res, {
-                    message: 'Email Address is already taken.',
-                    code: 400,
-                });
-            }
             const hashPassword = await bcrypt.hash(data.password, 10);
             data.password = hashPassword;
             data.verificationToken = crypto.randomBytes(16).toString('hex');
 
-            user = await _this.create(data);
+            const user = await _this.create(data);
             const authUserObj = {
                 id: user._id,
                 firstName: user.firstName,
@@ -49,7 +41,7 @@ module.exports = {
         }
     },
 
-    login: async function(req, res, data) {
+    login: async function(data) {
         try {
             data.email = data.email.toLowerCase();
             const user = await UserModel.findOne({ email: data.email });
