@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const randToken = require('rand-token');
 const jwt = require('jsonwebtoken');
 const ErrorService = require('./errorService');
-const sendErrorResponse = require('../utils/response').sendErrorResponse;
 const UserModel = require('../models/user');
 const crypto = require('crypto');
 const jwtSecretKey = process.env['JWT_SECRET'];
@@ -60,7 +59,8 @@ module.exports = {
             if (validPassword) {
                 const authUserObj = {
                     id: user._id,
-                    name: user.name,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                     email: user.email,
                     referral: user.referral,
                     tokens: {
@@ -156,6 +156,80 @@ module.exports = {
             throw error;
         }
     },
+
+    // Description: forgot password function
+    //Params:
+    //Param 1: email: User email.
+    //Returns: promise.
+    forgotPassword: async function(email) {
+        try {
+            const _this = this;
+            let user = await this.findOneBy({ email: email });
+            if (!user) {
+                const error = new Error('User does not exist.');
+                error.code = 400;
+                ErrorService.log('userService.forgotPassword', error);
+                throw error;
+            } else {
+                const buf = await crypto.randomBytes(20);
+                const token = buf.toString('hex');
+                //update a user.
+                user = await _this.updateOneBy(
+                    {
+                        _id: user._id,
+                    },
+                    {
+                        resetPasswordToken: token,
+                        resetPasswordExpires: Date.now() + 3600000, // 1 hour
+                    }
+                );
+
+                return user;
+            }
+        } catch (error) {
+            ErrorService.log('userService.forgotPassword', error);
+            throw error;
+        }
+    },
+    // Description: forgot password function.
+    //Params:
+    //Param 1:  password: User password.
+    //Param 2:  token: token generated in forgot password function.
+    //Returns: promise.
+    resetPassword: async function(password, token) {
+        try {
+            const _this = this;
+            let user = await _this.findOneBy({
+                resetPasswordToken: token,
+                resetPasswordExpires: {
+                    $gt: Date.now(),
+                },
+            });
+
+            if (!user) {
+                return null;
+            } else {
+                const hash = await bcrypt.hash(password, 10);
+                //update a user.
+                user = await _this.updateOneBy(
+                    {
+                        _id: user._id,
+                    },
+                    {
+                        password: hash,
+                        resetPasswordToken: '',
+                        resetPasswordExpires: '',
+                    }
+                );
+
+                return user;
+            }
+        } catch (error) {
+            ErrorService.log('userService.resetPassword', error);
+            throw error;
+        }
+    },
+
     hardDelete: async function(query) {
         try {
             await UserModel.deleteMany(query);
