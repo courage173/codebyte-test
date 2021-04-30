@@ -13,6 +13,7 @@ const postSchema = new Schema({
     userId: {
         type: String,
         ref: 'User',
+        required: true,
     },
     likeCount: {
         type: Number,
@@ -26,7 +27,7 @@ const postSchema = new Schema({
     deletedAt: {
         type: Date,
     },
-    deletedById: { type: String, ref: 'User', index: true },
+    deletedById: { type: String, ref: 'User' },
 });
 
 module.exports = mongoose.model('Post', postSchema);

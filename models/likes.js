@@ -13,10 +13,12 @@ const likeSchema = new Schema({
     userId: {
         type: String,
         ref: 'User',
+        required: true,
     },
     postId: {
         type: String,
         ref: 'Post',
+        required: true,
     },
     updatedAt: {
         type: Date,
