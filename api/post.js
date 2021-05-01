@@ -6,6 +6,10 @@ const PostService = require('../services/postService');
 const { validatePost } = require('../middlewares/validateCredentials');
 const { getUser } = require('../middlewares/user');
 
+// Route
+// Description: create a post
+// Params: null
+// Returns: 400: Error; 500: Server Error; 201: post details.
 router.post('/', getUser, validatePost, async (req, res) => {
     try {
         const data = req.body;
@@ -17,11 +21,15 @@ router.post('/', getUser, validatePost, async (req, res) => {
             });
         }
         const post = await PostService.create(data);
-        return sendItemResponse(req, res, post);
+        return sendItemResponse(req, res, post, 201);
     } catch (error) {
         return sendErrorResponse(req, res, error);
     }
 });
+
+// Description: get a post
+// Params: postId
+// Returns: 400: Error; 500: Server Error; 200: post details.
 router.get('/:postId', getUser, async (req, res) => {
     try {
         const { postId } = req.params;
@@ -34,6 +42,10 @@ router.get('/:postId', getUser, async (req, res) => {
         return sendErrorResponse(req, res, error);
     }
 });
+
+// Description: get all post
+// Params: null
+// Returns: 400: Error; 500: Server Error; 200: post details.
 router.get('/', getUser, async (req, res) => {
     try {
         const { skip, limit } = req.query;
@@ -44,6 +56,9 @@ router.get('/', getUser, async (req, res) => {
     }
 });
 
+// Description: update a post
+// Params: postId
+// Returns: 400: Error; 500: Server Error; 200: post details.
 router.put('/:postId/update', getUser, validatePost, async (req, res) => {
     try {
         const { postId } = req.params;
@@ -63,7 +78,9 @@ router.put('/:postId/update', getUser, validatePost, async (req, res) => {
         return sendErrorResponse(req, res, error);
     }
 });
-
+// Description: delete a post
+// Params: postId
+// Returns: 400: Error; 500: Server Error; 200: post details.
 router.delete('/:postId/delete', getUser, async (req, res) => {
     try {
         const { postId } = req.params;
@@ -93,13 +110,19 @@ router.delete('/:postId/delete', getUser, async (req, res) => {
     }
 });
 
+// Description: delete a post permanently
+// Params: postId
+// Returns: 400,401: Error; 500: Server Error; 200: message.
+
+/* this endpoint is for an admin to be able to delete a post.
+ normally we would have a crone job that removes deleted post 
+permanently by the user after some time(say a month) */
 router.delete('/hard-delete/:postId', getUser, async (req, res) => {
     try {
         const { postId } = req.params;
         const user = req.user;
         let post = await PostService.findOneBy({ _id: postId });
-        const userId = String(post.userId._id);
-        if (user.id !== userId && user.role !== 'ADMIN') {
+        if (user.role !== 'ADMIN') {
             return sendErrorResponse(req, res, {
                 message: 'you are not permitted to delete this post',
                 statusCode: 401,

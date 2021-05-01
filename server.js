@@ -86,6 +86,7 @@ app.get(['/', '/api'], function(req, res) {
 app.use(['/user', '/api/user'], require('./api/user'));
 app.use(['/post', '/api/post'], require('./api/post'));
 app.use(['/comment', '/api/comment'], require('./api/comments'));
+app.use(['/like', '/api/like'], require('./api/like'));
 
 module.exports = app;
 module.exports.close = function() {

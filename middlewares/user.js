@@ -7,6 +7,7 @@ const jwtSecretKey = process.env['JWT_SECRET'];
 module.exports = {
     getUser: async function(req, res, next) {
         try {
+            //get access token
             const accessToken = req.headers['authorization'];
             if (!accessToken) {
                 if (res) {
@@ -58,6 +59,7 @@ module.exports = {
                     return null;
                 }
             }
+            //set the user role
             if (user.role === 'admin') {
                 req.authorizationType = 'ADMIN';
             } else {
@@ -74,21 +76,6 @@ module.exports = {
             }
         } catch (error) {
             ErrorService.log('user.getUser', error);
-            throw error;
-        }
-    },
-    isAdmin: async function(req, res, next) {
-        try {
-            const role = req.authorizationType;
-            if (role !== 'ADMIN') {
-                return sendErrorResponse(req, res, {
-                    code: 401,
-                    message: 'You are unauthorized to perform this action',
-                });
-            }
-            next();
-        } catch (error) {
-            ErrorService.log('user.isAdmin', error);
             throw error;
         }
     },

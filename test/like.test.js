@@ -8,9 +8,9 @@ chai.use(require('chai-http'));
 const app = require('../server');
 const { hardDelete } = require('../services/userServices');
 const deleteAllPost = require('../services/postService').hardDelete;
-const deleteAllComment = require('../services/commentService').hardDelete;
+const deleteAllLike = require('../services/likeService').hardDelete;
 
-let token, postId, commentId;
+let token, postId;
 describe('User API', function() {
     this.timeout(30000);
     before(function(done) {
@@ -35,40 +35,41 @@ describe('User API', function() {
     after(async () => {
         await hardDelete({});
         await deleteAllPost({});
-        await deleteAllComment({});
+        await deleteAllLike({});
     });
-    it('should create a comment successfullyy', done => {
+    it('should like a post successfully', done => {
         chai.request(app)
-            .post(`/api/comment/${postId}`)
+            .post(`/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send(data.post)
             .end((err, res) => {
                 commentId = res.body._id;
                 expect(res.body).to.be.an('object');
-                expect(res.status).to.equal(201);
-                expect(res.body.content).to.equal(data.post.content);
+                expect(res.status).to.equal(200);
+                expect(res.body.liked).to.equal(true);
                 done();
             });
     });
-    it('should fail to create a comment when no content is passed', done => {
+    it('should not like a post multiple times', done => {
         chai.request(app)
-            .post(`/api/comment/${postId}`)
+            .post(`/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
-            .send({ content: '' })
+            .send(data.post)
             .end((err, res) => {
+                commentId = res.body._id;
                 expect(res.body).to.be.an('object');
-                expect(res.status).to.equal(400);
-                expect(res.body.message.content[0]).to.equal(
-                    'the content is required'
+                expect(res.status).to.equal(401);
+                expect(res.body.message).to.equal(
+                    'User cannot like a post multiple times'
                 );
                 done();
             });
     });
-    it('should fail to create a comment when invalid user token is passed', done => {
+    it('should fail to like a post when invalid user token is passed', done => {
         chai.request(app)
-            .post(`/api/comment/${postId}`)
+            .post(`/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', 'Basic nsdf78sd7f8s7d8fsbdhbfhs9dfsb')
             .send(data.user)
@@ -81,7 +82,7 @@ describe('User API', function() {
                 done();
             });
     });
-    it('should fail to create a comment when no user token is passed', done => {
+    it('should fail to like a post when no user token is passed', done => {
         chai.request(app)
             .post(`/api/comment/${postId}`)
             .set('Accept', 'application/json')
@@ -95,66 +96,14 @@ describe('User API', function() {
                 done();
             });
     });
-    it('should update a comment successfully by a user', done => {
-        chai.request(app)
-            .put(`/api/comment/${commentId}/update`)
-            .set('Accept', 'application/json')
-            .set('Authorization', token)
-            .send({ content: 'i am an updated post' })
-            .end((err, res) => {
-                expect(res.body).to.be.an('object');
-                expect(res.status).to.equal(200);
-                expect(res.body.content).to.equal('i am an updated post');
-                done();
-            });
-    });
-    it('should not update a comment successfully by a user when no content is provided', done => {
-        chai.request(app)
-            .put(`/api/comment/${commentId}/update`)
-            .set('Accept', 'application/json')
-            .set('Authorization', token)
-            .send({ content: '' })
-            .end((err, res) => {
-                expect(res.body).to.be.an('object');
-                expect(res.status).to.equal(400);
-                expect(res.body.message.content[0]).to.equal(
-                    'the content is required'
-                );
-                done();
-            });
-    });
-    it('should not update a comment if it is not the user that created the comment', done => {
+    it('should not unlike a post if it is not the user that liked the post', done => {
         chai.request(app)
             .post('/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user2)
             .end((err, res) => {
                 chai.request(app)
-                    .put(`/api/comment/${commentId}/update`)
-                    .set('Accept', 'application/json')
-                    .set(
-                        'Authorization',
-                        `Basic ${res.body.tokens.jwtAccessToken}`
-                    )
-                    .send({ content: 'i am an updated comment' })
-                    .end((err, res) => {
-                        expect(res.body).to.be.an('object');
-                        expect(res.status).to.equal(401);
-                        expect(res.body.message).to.equal(
-                            'you are not permitted to edit this comment'
-                        );
-                        done();
-                    });
-            });
-    });
-    it('should not delete a comment if its not the user or an admin', done => {
-        chai.request(app)
-            .post('/api/user/login')
-            .set('Accept', 'application/json')
-            .send(data.user2)
-            .end((err, res) => {
-                chai.request(app)
-                    .delete(`/api/comment/${commentId}/delete`)
+                    .post(`/api/like/${postId}/unlike`)
                     .set('Accept', 'application/json')
                     .set(
                         'Authorization',
@@ -164,21 +113,23 @@ describe('User API', function() {
                         expect(res.body).to.be.an('object');
                         expect(res.status).to.equal(401);
                         expect(res.body.message).to.equal(
-                            'you are not permitted to delete this comment'
+                            'you cannot unlike a post you have not liked previously'
                         );
                         done();
                     });
             });
     });
-    it('should delete a comment', done => {
+    it('should unlike a post successfully', done => {
         chai.request(app)
-            .delete(`/api/comment/${commentId}/delete`)
+            .post(`/api/like/${postId}/unlike`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
+            .send(data.post)
             .end((err, res) => {
+                commentId = res.body._id;
                 expect(res.body).to.be.an('object');
                 expect(res.status).to.equal(200);
-                expect(res.body.message).to.equal('deleted successfully');
+                expect(res.body.liked).to.equal(false);
                 done();
             });
     });
