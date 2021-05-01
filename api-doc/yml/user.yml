@@ -188,12 +188,42 @@ paths:
         get:
             tags:
                 - User
-            summary: profile endpoint for user
+            summary: get user profile details
             security:
                 - bearerAuth: []
             responses:
                 '200':
                     description: get user profile
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/User'
+
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/user/upload:
+        post:
+            tags:
+                - User
+            summary: upload profile picture for user
+            security:
+                - bearerAuth: []
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                image:
+                                    type: string
+                                    format: binary
+            responses:
+                '200':
+                    description: return user details
                     content:
                         application/json:
                             schema:
@@ -215,6 +245,8 @@ components:
                 - firstName
                 - lastName
                 - tokens
+                - role
+                - createdAt
             properties:
                 id:
                     type: string
@@ -223,6 +255,10 @@ components:
                 firstName:
                     type: string
                 lastName:
+                    type: string
+                role:
+                    type: string
+                createdAt:
                     type: string
                 tokens:
                     type: object

@@ -128,6 +128,7 @@ module.exports = {
         return res.status(code || 200).send(item);
     },
     sendErrorResponse: function(req, res, error) {
+        console.log(error)
         if (error.statusCode && error.message) {
             return res
                 .status(error.statusCode)
