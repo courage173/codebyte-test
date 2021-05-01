@@ -5,7 +5,6 @@ const ObjectID = mongoose.Types.ObjectId;
 function filterKeys(field) {
     field = field._doc ? field._doc : field;
 
-
     const filteredKeys = Object.keys(field).filter(
         key =>
             key !== '__v' &&

@@ -10,7 +10,7 @@ describe('Server starting properly', function() {
     this.timeout(20000);
     it('server ok', done => {
         chai.request(app)
-            .get('/')
+            .get('/v1')
             .set('Accept', 'application/json')
             .end((err, res) => {
                 expect(res.status).to.equal(200)

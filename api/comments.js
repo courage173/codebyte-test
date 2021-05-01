@@ -7,7 +7,6 @@ const PostService = require('../services/postService');
 const { validatePost } = require('../middlewares/validateCredentials');
 const { getUser } = require('../middlewares/user');
 
-
 // Route
 // Description: to can reply to a post
 // Params: postId
@@ -144,7 +143,6 @@ router.delete('/:commentId/delete', getUser, async (req, res) => {
 // Description: delete a comment permanently
 // Params: commentId
 // Returns: 400: Error; 500: Server Error; 200: delete successfully.
-
 
 /* this endpoint is for an admin to be able to delete a post.
  normally we would have a crone job that removes deleted comment 

@@ -14,7 +14,7 @@ describe('User API', function() {
     this.timeout(30000);
     before(function(done) {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
@@ -29,7 +29,7 @@ describe('User API', function() {
     });
     it('should create a post successfullyy', done => {
         chai.request(app)
-            .post('/api/post')
+            .post('/v1/api/post')
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send(data.post)
@@ -43,7 +43,7 @@ describe('User API', function() {
     });
     it('should fail to create a post when no content is passed', done => {
         chai.request(app)
-            .post('/api/post')
+            .post('/v1/api/post')
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send({ content: '' })
@@ -58,7 +58,7 @@ describe('User API', function() {
     });
     it('should fail to create a post when invalid user token is passed', done => {
         chai.request(app)
-            .post('/api/post')
+            .post('/v1/api/post')
             .set('Accept', 'application/json')
             .set('Authorization', 'Basic nsdf78sd7f8s7d8fsbdhbfhs9dfsb')
             .send(data.user)
@@ -73,7 +73,7 @@ describe('User API', function() {
     });
     it('should fail to create a post when no user token is passed', done => {
         chai.request(app)
-            .post('/api/post')
+            .post('/v1/api/post')
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
@@ -87,7 +87,7 @@ describe('User API', function() {
     });
     it('should update a post successfully by a user', done => {
         chai.request(app)
-            .put(`/api/post/${postId}/update`)
+            .put(`/v1/api/post/${postId}/update`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send({ content: 'i am an updated post' })
@@ -100,7 +100,7 @@ describe('User API', function() {
     });
     it('should not update a post successfully by a user when no content is provided', done => {
         chai.request(app)
-            .put(`/api/post/${postId}/update`)
+            .put(`/v1/api/post/${postId}/update`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send({ content: '' })
@@ -115,12 +115,12 @@ describe('User API', function() {
     });
     it('should not update a post if it is not the user that created the post', done => {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user2)
             .end((err, res) => {
                 chai.request(app)
-                    .put(`/api/post/${postId}/update`)
+                    .put(`/v1/api/post/${postId}/update`)
                     .set('Accept', 'application/json')
                     .set(
                         'Authorization',
@@ -139,12 +139,12 @@ describe('User API', function() {
     });
     it('should not delete a post if its not the user or an admin', done => {
         chai.request(app)
-            .post('/api/user/login')
+            .post('/v1/api/user/login')
             .set('Accept', 'application/json')
             .send(data.user2)
             .end((err, res) => {
                 chai.request(app)
-                    .delete(`/api/post/${postId}/delete`)
+                    .delete(`/v1/api/post/${postId}/delete`)
                     .set('Accept', 'application/json')
                     .set(
                         'Authorization',
@@ -162,7 +162,7 @@ describe('User API', function() {
     });
     it('should delete a post', done => {
         chai.request(app)
-            .delete(`/api/post/${postId}/delete`)
+            .delete(`/v1/api/post/${postId}/delete`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .end((err, res) => {

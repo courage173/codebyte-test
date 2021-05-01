@@ -15,13 +15,13 @@ describe('User API', function() {
     this.timeout(30000);
     before(function(done) {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
                 token = `Basic ${res.body.tokens.jwtAccessToken}`;
                 chai.request(app)
-                    .post('/api/post')
+                    .post('/v1/api/post')
                     .set('Accept', 'application/json')
                     .set('Authorization', token)
                     .send(data.post)
@@ -39,7 +39,7 @@ describe('User API', function() {
     });
     it('should like a post successfully', done => {
         chai.request(app)
-            .post(`/api/like/${postId}`)
+            .post(`/v1/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send(data.post)
@@ -53,7 +53,7 @@ describe('User API', function() {
     });
     it('should not like a post multiple times', done => {
         chai.request(app)
-            .post(`/api/like/${postId}`)
+            .post(`/v1/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send(data.post)
@@ -69,7 +69,7 @@ describe('User API', function() {
     });
     it('should fail to like a post when invalid user token is passed', done => {
         chai.request(app)
-            .post(`/api/like/${postId}`)
+            .post(`/v1/api/like/${postId}`)
             .set('Accept', 'application/json')
             .set('Authorization', 'Basic nsdf78sd7f8s7d8fsbdhbfhs9dfsb')
             .send(data.user)
@@ -84,7 +84,7 @@ describe('User API', function() {
     });
     it('should fail to like a post when no user token is passed', done => {
         chai.request(app)
-            .post(`/api/comment/${postId}`)
+            .post(`/v1/api/comment/${postId}`)
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
@@ -98,12 +98,12 @@ describe('User API', function() {
     });
     it('should not unlike a post if it is not the user that liked the post', done => {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user2)
             .end((err, res) => {
                 chai.request(app)
-                    .post(`/api/like/${postId}/unlike`)
+                    .post(`/v1/api/like/${postId}/unlike`)
                     .set('Accept', 'application/json')
                     .set(
                         'Authorization',
@@ -121,7 +121,7 @@ describe('User API', function() {
     });
     it('should unlike a post successfully', done => {
         chai.request(app)
-            .post(`/api/like/${postId}/unlike`)
+            .post(`/v1/api/like/${postId}/unlike`)
             .set('Accept', 'application/json')
             .set('Authorization', token)
             .send(data.post)

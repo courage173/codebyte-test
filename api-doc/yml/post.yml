@@ -1,0 +1,183 @@
+paths:
+    /v1/api/post:
+        post:
+            tags:
+                - Post
+            summary: a user can create a post
+            description: 'create a post'
+            operationId: createPost
+            security:
+                - bearerAuth: []
+            requestBody:
+                description: content to post
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Post'
+            responses:
+                '201':
+                    description: created Successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Post'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/post/:
+        get:
+            tags:
+                - Post
+            summary: get all post
+            description: 'get all post'
+            operationId: getAllPost
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: Get all post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Post'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/post/{postId}:
+        get:
+            tags:
+                - Post
+            summary: get a single post by id
+            description: 'get a post'
+            operationId: getSinglePost
+            parameters:
+                - in: path
+                  name: postId # Note the name is the same as in the path
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: Get a single post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Post'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/post/{postId}/update:
+        put:
+            tags:
+                - Post
+            summary: a user can create a post
+            description: 'update a post'
+            operationId: updatePost
+            parameters:
+                - in: path
+                  name: postId # Note the name is the same as in the path
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            requestBody:
+                description: content to post
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Post'
+            responses:
+                '200':
+                    description: update Successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Post'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/post/{postId}/delete:
+        delete:
+            tags:
+                - Post
+            summary: delete post
+            description: 'delete a post'
+            operationId: deletePost
+            parameters:
+                - in: path
+                  name: postId # Note the name is the same as in the path
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: delete Successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Post'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+components:
+    response:
+        Post:
+            type: object
+            required:
+                - content
+                - createdAt
+                - likeCount
+                - userId
+                - updatedAt
+            properties:
+                content:
+                    type: string
+                createdAt:
+                    type: string
+                likeCount:
+                    type: number
+                userId:
+                    type: object
+                updatedAt:
+                    type: string
+
+    schemas:
+        Post:
+            type: object
+            properties:
+                content:
+                    type: string
+                    example: i am a new post
+        Error:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: error message
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT

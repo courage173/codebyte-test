@@ -71,7 +71,8 @@ router.post('/:postId/unlike', getUser, async (req, res) => {
         });
         if (!likedPost || !likedPost.liked) {
             return sendErrorResponse(req, res, {
-                message: 'you cannot unlike a post you have not liked previously',
+                message:
+                    'you cannot unlike a post you have not liked previously',
                 code: 401,
             });
         }
@@ -90,7 +91,7 @@ router.get('/:postId', getUser, async (req, res) => {
         const { skip, limit } = req.query;
         const { postId } = req.params;
         const comments = await LikeService.findBy(
-            { postId: postId, deleted: false },
+            { postId: postId, liked: true },
             skip,
             limit
         );

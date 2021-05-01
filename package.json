@@ -35,6 +35,8 @@
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.12.3",
         "rand-token": "^1.0.1",
+        "swagger-jsdoc": "^6.0.0",
+        "swagger-ui-express": "^4.1.6",
         "validatorjs": "^3.22.1",
         "winston": "^3.3.3"
     },
