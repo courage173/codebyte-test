@@ -22,7 +22,7 @@ describe('User API', function() {
     });
     it('return signup successfull', done => {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
@@ -36,7 +36,7 @@ describe('User API', function() {
     });
     it('should not signup a user who exist already', done => {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send(data.user)
             .end((err, res) => {
@@ -47,7 +47,7 @@ describe('User API', function() {
     });
     it('it should not signup the user when a required field are missing', done => {
         chai.request(app)
-            .post('/api/user/register')
+            .post('/v1/api/user/register')
             .set('Accept', 'application/json')
             .send({})
             .end((err, res) => {
@@ -67,7 +67,7 @@ describe('User API', function() {
     });
     it('it should successfully login a user', done => {
         chai.request(app)
-            .post('/api/user/login')
+            .post('/v1/api/user/login')
             .set('Accept', 'application/json')
             .send({
                 email: data.user.email,
@@ -84,7 +84,7 @@ describe('User API', function() {
     });
     it('it should not login a user with wrong password', done => {
         chai.request(app)
-            .post('/api/user/login')
+            .post('/v1/api/user/login')
             .set('Accept', 'application/json')
             .send({
                 email: data.user.email,
@@ -98,7 +98,7 @@ describe('User API', function() {
     });
     it('it should not login a user with credentials that does not exist', done => {
         chai.request(app)
-            .post('/api/user/login')
+            .post('/v1/api/user/login')
             .set('Accept', 'application/json')
             .send({
                 email: 'random' + data.user.email,
@@ -112,7 +112,7 @@ describe('User API', function() {
     });
     it('it should not login a user with empty email or password', done => {
         chai.request(app)
-            .post('/api/user/login')
+            .post('/v1/api/user/login')
             .set('Accept', 'application/json')
             .send({
                 email: '',
@@ -132,7 +132,7 @@ describe('User API', function() {
     });
     it('it should succesffuly reset password and send a link', done => {
         chai.request(app)
-            .post('/api/user/forgot-password')
+            .post('/v1/api/user/forgot-password')
             .set('Accept', 'application/json')
             .send({
                 email: data.user.email,
@@ -148,7 +148,7 @@ describe('User API', function() {
     });
     it('it should not reset password for a user who does not exist', done => {
         chai.request(app)
-            .post('/api/user/forgot-password')
+            .post('/v1/api/user/forgot-password')
             .set('Accept', 'application/json')
             .send({
                 email: 'random' + data.user.email,
@@ -162,7 +162,7 @@ describe('User API', function() {
     });
     it('it should not change password when token is not supplied', done => {
         chai.request(app)
-            .post('/api/user/reset-password')
+            .post('/v1/api/user/reset-password')
             .set('Accept', 'application/json')
             .send({
                 password: 'newpassword',
@@ -179,7 +179,7 @@ describe('User API', function() {
     });
     it('it should not change password when token is not invalid', done => {
         chai.request(app)
-            .post('/api/user/reset-password')
+            .post('/v1/api/user/reset-password')
             .set('Accept', 'application/json')
             .send({
                 password: 'newpassword',
@@ -198,7 +198,7 @@ describe('User API', function() {
     it('it should successfully change password', done => {
         userModel.findOne({ email: data.user.email }, (err, user) => {
             chai.request(app)
-                .post('/api/user/reset-password')
+                .post('/v1/api/user/reset-password')
                 .set('Accept', 'application/json')
                 .send({
                     password: 'newpassword',

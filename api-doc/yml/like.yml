@@ -1,0 +1,118 @@
+paths:
+    /v1/api/like/{postId}:
+        post:
+            tags:
+                - Likes
+            summary: a user can like post
+            description: 'like a post'
+            operationId: likePost
+            parameters:
+                - in: path
+                  name: postId
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: like post Successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Like'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+        get:
+            tags:
+                - Likes
+            summary: get all likes belonging to a post
+            description: 'get all post likes'
+            operationId: getPostLikes
+            parameters:
+                - in: path
+                  name: postId
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: Get all post like Successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Like'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/{postId}/unlike:
+        get:
+            tags:
+                - Likes
+            summary: should unlike a post
+            description: 'unlike a post'
+            operationId: unlikePost
+            parameters:
+                - in: path
+                  name: postId
+                  required: true
+                  schema:
+                      type: string
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: unlike post Successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Like'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+components:
+    response:
+        Like:
+            type: object
+            required:
+                - liked
+                - createdAt
+                - postId
+                - userId
+                - updatedAt
+            properties:
+                liked:
+                    type: boolean
+                createdAt:
+                    type: string
+                postId:
+                    type: string
+                userId:
+                    type: object
+                updatedAt:
+                    type: string
+
+    schemas:
+        Error:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: error message
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT

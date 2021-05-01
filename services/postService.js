@@ -47,7 +47,7 @@ module.exports = {
                 .limit(limit);
             const count = await PostModel.countDocuments(query);
             const response = {};
-            response.post = posts;
+            response.posts = posts;
             response.count = count;
             response.limit = limit;
             response.skip = skip;

@@ -1,0 +1,299 @@
+paths:
+    /v1/api/user/register:
+        post:
+            tags:
+                - User
+            summary: Rregister User
+            description: 'Register User'
+            operationId: register
+            requestBody:
+                description: required fields to login*
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Register'
+            responses:
+                '200':
+                    description: Login Successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Register'
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/user/login:
+        post:
+            tags:
+                - User
+            summary: User login
+            description: ''
+            operationId: login
+            requestBody:
+                description: required fields to login*
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Login'
+            responses:
+                '200':
+                    description: Login Successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/Register'
+                '400':
+                    description: Error username or password missing
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/user/update:
+        put:
+            tags:
+                - User
+            summary: Update endpoint for user
+            components:
+                securitySchemes:
+                    bearerAuth:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            security:
+                - bearerAuth: []
+            requestBody:
+                description: A JSON object containing information user wants to update
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: string
+                                lastName:
+                                    type: string
+                                email:
+                                    type: string
+                                dateOfBirth:
+                                    type: string
+                                phone:
+                                    type: string
+                        example:
+                            firstName: Kelly
+                            lastName: Anne
+
+            responses:
+                '200':
+                    description: Successful login
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/User'
+
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - message
+                                properties:
+                                    message:
+                                        type: string
+    /v1/api/user/forgot-password:
+        post:
+            tags:
+                - User
+            summary: forgot password endpoint
+            requestBody:
+                description: reseting user password
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                        example:
+                            email: johnmith@gmail.com
+
+            responses:
+                '200':
+                    description: Successful send email
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                require:
+                                    - message
+                                properties:
+                                    message:
+                                        type: string
+
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/user/reset-password:
+        post:
+            tags:
+                - User
+            summary: Reset Password
+            requestBody:
+                description: reseting user password
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                password:
+                                    type: string
+                                confirmPassword:
+                                    type: string
+                        example:
+                            password: newpassword
+                            confirmPassword: newpassword
+
+            responses:
+                '200':
+                    description: Successful reset password
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                require:
+                                    - message
+                                properties:
+                                    message:
+                                        type: string
+
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /v1/api/user/profile:
+        get:
+            tags:
+                - User
+            summary: profile endpoint for user
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: get user profile
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/response/User'
+
+                '400':
+                    description: Bad request Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+components:
+    response:
+        Register:
+            type: object
+            required:
+                - id
+                - email
+                - firstName
+                - lastName
+                - tokens
+            properties:
+                id:
+                    type: string
+                email:
+                    type: string
+                firstName:
+                    type: string
+                lastName:
+                    type: string
+                tokens:
+                    type: object
+                    properties:
+                        jwtAccessToken:
+                            type: string
+                        jwtRefreshToken:
+                            type: string
+        User:
+            type: object
+            required:
+                - id
+                - email
+                - firstName
+                - lastName
+            properties:
+                id:
+                    type: string
+                email:
+                    type: string
+                firstName:
+                    type: string
+                lastName:
+                    type: string
+                phone:
+                    type: string
+                profilePic:
+                    type: string
+                dateOfBirth:
+                    type: string
+
+    schemas:
+        Register:
+            type: object
+            properties:
+                firstName:
+                    type: string
+                    example: john
+                lastName:
+                    type: string
+                    example: doe
+                email:
+                    type: string
+                    example: johnmith@gmail.com
+                dateOfBirth:
+                    type: string
+                    example: 20/2/1990
+                confirmPassword:
+                    type: string
+                    example: iam@randomePass
+                password:
+                    type: string
+                    example: iam@randomePass
+
+        Login:
+            type: object
+            properties:
+                email:
+                    type: string
+                    example: johnmith@gmail.com
+                password:
+                    type: string
+                    example: iam@randomePass
+        Error:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: error message
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT

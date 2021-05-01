@@ -72,7 +72,7 @@ const server = http.listen(app.get('port'), function() {
     console.log('Server Started on port ' + app.get('port'));
 });
 
-app.get(['/', '/api'], function(req, res) {
+app.get(['/v1', '/v1/api'], function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(
         JSON.stringify({
@@ -83,10 +83,11 @@ app.get(['/', '/api'], function(req, res) {
     );
 });
 
-app.use(['/user', '/api/user'], require('./api/user'));
-app.use(['/post', '/api/post'], require('./api/post'));
-app.use(['/comment', '/api/comment'], require('./api/comments'));
-app.use(['/like', '/api/like'], require('./api/like'));
+app.use(['/v1/user', '/v1/api/user'], require('./api/user'));
+app.use(['/v1/post', '/v1/api/post'], require('./api/post'));
+app.use(['/v1/comment', '/v1/api/comment'], require('./api/comments'));
+app.use(['/v1/like', '/v1/api/like'], require('./api/like'));
+app.use(['/v1/docs', '/v1/api/docs'], require('./api/swagger'));
 
 module.exports = app;
 module.exports.close = function() {
