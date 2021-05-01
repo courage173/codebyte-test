@@ -17,6 +17,7 @@ module.exports = {
     },
     findOneBy: async function(query) {
         try {
+
             const post = await PostModel.findOne(query).populate(
                 'userId',
                 'firstName lastName email'

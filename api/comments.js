@@ -7,11 +7,15 @@ const PostService = require('../services/postService');
 const { validatePost } = require('../middlewares/validateCredentials');
 const { getUser } = require('../middlewares/user');
 
+
+// Route
+// Description: to can reply to a post
+// Params: postId
+// Returns: 400: Error; 500: Server Error; 201: post details.
 router.post('/:postId', getUser, validatePost, async (req, res) => {
     try {
         const data = req.body;
         const { postId } = req.params;
-        const post = await PostService.findOneBy({ _id: postId });
         data.userId = req.user.id;
         if (!data.userId) {
             return sendErrorResponse(req, res, {
@@ -19,6 +23,8 @@ router.post('/:postId', getUser, validatePost, async (req, res) => {
                 message: 'user id must be present',
             });
         }
+        //check if the post exist
+        const post = await PostService.findOneBy({ _id: postId });
         if (!post) {
             return sendErrorResponse(req, res, {
                 code: 400,
@@ -29,11 +35,15 @@ router.post('/:postId', getUser, validatePost, async (req, res) => {
         data.postId = postId;
 
         const comment = await CommentService.create(data);
-        return sendItemResponse(req, res, comment);
+        return sendItemResponse(req, res, comment, 201);
     } catch (error) {
         return sendErrorResponse(req, res, error);
     }
 });
+// Route
+// Description: to get a single comment
+// Params: commentId
+// Returns: 400: Error; 500: Server Error; 200: comment details.
 router.get('/:commentId/comment', getUser, async (req, res) => {
     try {
         const { commentId } = req.params;
@@ -47,6 +57,11 @@ router.get('/:commentId/comment', getUser, async (req, res) => {
         return sendErrorResponse(req, res, error);
     }
 });
+
+// Route
+// Description: get all comment of a post
+// Params: postId
+// Returns: 400: Error; 500: Server Error; 200: an array of comments.
 router.get('/:postId', getUser, async (req, res) => {
     try {
         const { skip, limit } = req.query;
@@ -62,11 +77,16 @@ router.get('/:postId', getUser, async (req, res) => {
     }
 });
 
+// Route
+// Description: update  comment
+// Params: commentId
+// Returns: 400: Error; 500: Server Error; 200: comment details.
 router.put('/:commentId/update', getUser, validatePost, async (req, res) => {
     try {
         const { commentId } = req.params;
         const { content } = req.body;
         const userId = req.user.id;
+        //prevent another user from editting a comment which he did not post
         let comment = await CommentService.findOneBy({ _id: commentId });
         const user = String(comment.userId._id);
         if (userId !== user) {
@@ -85,10 +105,17 @@ router.put('/:commentId/update', getUser, validatePost, async (req, res) => {
     }
 });
 
+// Route
+// Description: delete comment
+// Params: commentId
+// Returns: 400: Error; 500: Server Error; 200: successful message.
 router.delete('/:commentId/delete', getUser, async (req, res) => {
     try {
         const { commentId } = req.params;
         const user = req.user;
+
+        //prevent a user from deleting another persons comment
+        //an admin should be able to delete a comment in case of violations
         const comment = await CommentService.findOneBy({
             _id: commentId,
         });
@@ -113,11 +140,20 @@ router.delete('/:commentId/delete', getUser, async (req, res) => {
     }
 });
 
-router.delete('/hard-delete/:postId', getUser, async (req, res) => {
+// Route
+// Description: delete a comment permanently
+// Params: commentId
+// Returns: 400: Error; 500: Server Error; 200: delete successfully.
+
+
+/* this endpoint is for an admin to be able to delete a post.
+ normally we would have a crone job that removes deleted comment 
+permanently by the user after some time(say a month) */
+router.delete('/hard-delete/:commentId', getUser, async (req, res) => {
     try {
-        const { postId } = req.params;
+        const { commentId } = req.params;
         const user = req.user;
-        let post = await CommentService.findOneBy({ _id: postId });
+        let post = await CommentService.findOneBy({ _id: commentId });
         const userId = String(post.userId._id);
         if (user.id !== userId && user.role !== 'ADMIN') {
             return sendErrorResponse(req, res, {
@@ -126,7 +162,7 @@ router.delete('/hard-delete/:postId', getUser, async (req, res) => {
             });
         }
         post = await CommentService.deleteOneBy({
-            _id: postId,
+            _id: commentId,
         });
 
         return sendItemResponse(req, res, post);

@@ -36,7 +36,7 @@ describe('User API', function() {
             .end((err, res) => {
                 postId = res.body._id;
                 expect(res.body).to.be.an('object');
-                expect(res.status).to.equal(200);
+                expect(res.status).to.equal(201);
                 expect(res.body.content).to.equal(data.post.content);
                 done();
             });

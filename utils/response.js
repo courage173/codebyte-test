@@ -73,7 +73,6 @@ function isDate(date) {
 module.exports = {
     sendListResponse: async function(req, res, list, count) {
         // remove __v, deleted, deletedAt and deletedById if not Admin
-        console.log('list calls it')
         if (req.authorizationType !== 'ADMIN') {
             if (Array.isArray(list)) {
                 list = list.map(field =>
@@ -113,7 +112,7 @@ module.exports = {
         return res.status(200).send(response);
     },
 
-    async sendItemResponse(req, res, item) {
+    async sendItemResponse(req, res, item, code) {
         // remove __v, deleted, deletedAt and deletedById if not Master
         if (req.authorizationType !== 'ADMIN') {
             if (Array.isArray(item)) {
@@ -127,7 +126,7 @@ module.exports = {
             }
         }
 
-        return res.status(200).send(item);
+        return res.status(code || 200).send(item);
     },
     sendErrorResponse: function(req, res, error) {
         if (error.statusCode && error.message) {
