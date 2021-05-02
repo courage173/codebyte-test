@@ -53,11 +53,6 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(bodyParser.json({ limit: '10mb' }));
 
-const { RATE_LIMITTER_ENABLED } = process.env;
-if (RATE_LIMITTER_ENABLED === 'true') {
-    const rateLimiter = require('./backend/middlewares/rateLimit');
-    app.use(rateLimiter);
-}
 //View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
